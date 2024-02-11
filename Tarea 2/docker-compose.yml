@@ -1,0 +1,26 @@
+version: '3.7'
+
+services:
+  frontend:
+    container_name: react_frontend
+    build:
+      context: ./frontend # Ruta al directorio del frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000" # Puerto del frontend
+
+  backend:
+    container_name: express_backend
+    build:
+      context: ./backend # Ruta al directorio del backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000" # Puerto del backend
+    depends_on:
+      - mongodb
+
+  mongodb:
+    container_name: mongodb
+    image: mongo:latest
+    ports:
+      - "27017:27017" # Puerto de MongoDB
