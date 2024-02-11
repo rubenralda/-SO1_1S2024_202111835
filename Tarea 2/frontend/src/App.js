@@ -1,31 +1,43 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 const CameraCapture = () => {
-  const [image, setImage] = useState(null);
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+  const [imageData, setImageData] = useState(null);
 
-  const captureImage = async () => {
-    const videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
-    const videoElement = document.createElement('video');
-    videoElement.srcObject = videoStream;
-    videoElement.play();
-    const canvas = document.createElement('canvas');
-    canvas.width = videoElement.videoWidth;
-    canvas.height = videoElement.videoHeight;
-    const context = canvas.getContext('2d');
-    context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-    const imageData = canvas.toDataURL('image/png');
-    setImage(imageData);
-    videoStream.getVideoTracks()[0].stop();
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.play();
+      }
+    } catch (error) {
+      console.error('Error accessing camera:', error);
+    }
   };
 
-  const uploadImage = async () => {
+  const captureImage = () => {
+    if (videoRef.current && canvasRef.current) {
+      const video = videoRef.current;
+      const canvas = canvasRef.current;
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const context = canvas.getContext('2d');
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const data = canvas.toDataURL('image/jpeg');
+      setImageData(data);
+    }
+  };
+
+  const sendDataToBackend = async () => {
     try {
-      await fetch('/api/upload', {
+      await fetch('http://localhost:5000/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image: image }),
+        body: JSON.stringify({ image: imageData }),
       });
-      console.log('Image uploaded successfully');
+      console.log('Image uploaded successfully', imageData);
     } catch (error) {
       console.error('Error uploading image:', error);
     }
@@ -33,9 +45,16 @@ const CameraCapture = () => {
 
   return (
     <div>
+      <button onClick={startCamera}>Start Camera</button>
       <button onClick={captureImage}>Capture Image</button>
-      {image && <img src={image} alt="Captured" />}
-      {image && <button onClick={uploadImage}>Upload Image</button>}
+      {imageData && (
+        <div>
+          <img src={imageData} alt="Captured" />
+          <button onClick={sendDataToBackend}>Send to Backend</button>
+        </div>
+      )}
+      <video ref={videoRef} style={{ display: 'none' }} />
+      <canvas ref={canvasRef} style={{ display: 'none' }} />
     </div>
   );
 };

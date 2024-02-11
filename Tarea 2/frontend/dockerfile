@@ -1,4 +1,4 @@
-# Use the official Node.js 16 image
+# Use the official lightweight Node.js 16 image
 FROM node:16-alpine
 
 # Set the working directory in the container
@@ -13,8 +13,8 @@ RUN npm install
 # Copy the rest of the application code to the working directory
 COPY . .
 
-# Expose port 5000
-EXPOSE 5000
+# Expose port 3000
+EXPOSE 3000
 
-# Start the Express server
-CMD ["npm", "run", "dev"]
+# Start the React application
+CMD ["npm", "start"]

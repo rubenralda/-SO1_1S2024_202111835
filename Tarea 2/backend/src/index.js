@@ -12,10 +12,18 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors());
 
-mongoose.connect("mongodb://localhost:27017/imageDB", {
+mongoose.connect("mongodb://mongodb:27017/imageDB", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+
+const db = mongoose.connection;
+
+db.on('error', console.error.bind(console, 'Error de conexión a MongoDB:'));
+db.once('open', () => {
+  console.log('Conexión exitosa a MongoDB');
+});
+
 // Define Image schema
 const imageSchema = new mongoose.Schema({
   data: Buffer,
@@ -23,7 +31,7 @@ const imageSchema = new mongoose.Schema({
 });
 const ImageModel = mongoose.model("Image", imageSchema);
 
-app.get("/", async (req, res) => {
+app.post("/", async (req, res) => {
   try {
     const imageData = req.body.image;
     const base64Data = imageData.replace(/^data:image\/png;base64,/, "");
@@ -42,5 +50,5 @@ app.get("/", async (req, res) => {
 
 // iniciamos nuestro servidor
 app.listen(app.get("port"), () => {
-  console.log("Servidor iniciado en el puerto: " + app.get("port"));
+  console.log("\nServidor iniciado en el puerto: " + app.get("port") + "\n");
 });
