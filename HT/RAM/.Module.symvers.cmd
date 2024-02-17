@@ -1,1 +1,0 @@
-savedcmd_/home/ruben/Escritorio/-SO1_1S2024_202111835/HT/RAM/Module.symvers :=  scripts/mod/modpost -m -a      -o /home/ruben/Escritorio/-SO1_1S2024_202111835/HT/RAM/Module.symvers -T /home/ruben/Escritorio/-SO1_1S2024_202111835/HT/RAM/modules.order -i Module.symvers -e 

@@ -1,29 +1,79 @@
-import { useState } from 'react';
-import logo from './assets/images/logo-universal.png';
-import './App.css';
+import { useState, useEffect } from 'react';
+//import './App.css';
 import { DatosRam } from "../wailsjs/go/main/App";
-//import { DatosRam } from "../wailsjs/go/main/App"
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Doughnut } from 'react-chartjs-2';
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 function App() {
-    const [resultText, setResultText] = useState();
-    const [name, setName] = useState('');
-    const updateName = (e) => setName(e.target.value);
-    const updateResultText = (result) => console.log(result);
+  const [data, setData] = useState({
+    labels: ['Libre', 'En Uso'],
+    datasets: [
+      {
+        label: '# of Votes',
+        data: [63.24, 36.76],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+        ],
+        borderWidth: 1,
+      },
+    ],
+  });
+  const [options, setOptions] = useState({
+    responsive: true,
+    legend: {
+      display: false,
+    },
+    title: {
+      display: true,
+      text: 'RAM Usage',
+    },
+  });
 
-    function greet() {
-        DatosRam().then(updateResultText);
-    }
+  const [porcentaje, setPorcentaje] = useState(0)
 
-    return (
-        <div id="App">
-            <img src={logo} id="logo" alt="logo" />
-            <div id="result" className="result">{resultText}</div>
-            <div id="input" className="input-box">
-                <input id="name" className="input" onChange={updateName} autoComplete="off" name="input" type="text" />
-                <button className="btn" onClick={greet}>Greet</button>
-            </div>
-        </div>
-    )
+  function verRam() {
+    DatosRam().then((informacion) => {
+      setPorcentaje(informacion.Porcentaje)
+      setData({
+        labels: ['Libre', 'En Uso'],
+        datasets: [
+          {
+            label: '# of Votes',
+            data: [informacion.Porcentaje, 100 - informacion.Porcentaje],
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.2)',
+              'rgba(54, 162, 235, 0.2)',
+            ],
+            borderColor: [
+              'rgba(255, 99, 132, 1)',
+              'rgba(54, 162, 235, 1)',
+            ],
+            borderWidth: 1,
+          },
+        ],
+      })
+    });
+  }
+  useEffect(() => {
+    const interval = setInterval(verRam, 500);
+
+    return () => clearInterval(interval);
+  }, [])
+  return (
+    <div style={{width: "600px"}}>
+      <label style={{fontSize: "40px"}}>RAM</label>
+      <br />
+      <label style={{fontSize: "25px"}}>{porcentaje}% en uso</label>
+      <Doughnut data={data} options={options} />
+    </div>
+  );
 }
 
 export default App

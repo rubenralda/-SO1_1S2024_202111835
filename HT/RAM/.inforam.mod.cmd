@@ -1,1 +1,0 @@
-savedcmd_/home/ruben/Escritorio/-SO1_1S2024_202111835/HT/RAM/inforam.mod := printf '%s\n'   inforam.o | awk '!x[$$0]++ { print("/home/ruben/Escritorio/-SO1_1S2024_202111835/HT/RAM/"$$0) }' > /home/ruben/Escritorio/-SO1_1S2024_202111835/HT/RAM/inforam.mod

@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"os/exec"
 )
 
 // App struct
@@ -26,28 +28,29 @@ func (a *App) Greet(name string) string {
 	return fmt.Sprintf("Hello %s, It's show time!", name)
 }
 
-func (a *App) DatosRam() string {
+func (a *App) DatosRam() *ramstruct {
 	fmt.Println("DATOS OBTENIDOS DESDE EL MODULO:")
-	fmt.Println("")
 
-	/* cmd := exec.Command("sh", "-c", "cat /proc/modulo_ram")
+	cmd := exec.Command("sh", "-c", "cat /proc/modulo_ram")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Println(err)
 	}
 	output := string(out[:])
+	fmt.Println(output)
 	myram := ramstruct{}
 	errr := json.Unmarshal([]byte(output), &myram)
 	if errr != nil {
 		fmt.Println("Error:", err)
 	}
-	return myram */
-	return "hola"
+	fmt.Println(myram)
+	return &myram
+	//return "hola"
 }
 
 type ramstruct struct {
-	Total_Ram         int `json:"Total_Ram"`
-	Ram_en_Uso        int `json:"Ram_en_Uso"`
-	Ram_libre         int `json:"Ram_libre"`
-	Porcentaje_en_uso int `json:"Porcentaje_en_uso"`
+	Total_Ram         int `json:"TotalRam"`
+	Ram_en_Uso        int `json:"MemoriaEnUso"`
+	Ram_libre         int `json:"Porcentaje"`
+	Porcentaje_en_uso int `json:"Libre"`
 }
