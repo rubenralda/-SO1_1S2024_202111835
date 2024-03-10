@@ -3,7 +3,10 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "/usr/include",
+                "/lib/modules/6.5.0-25-generic/build/",
+                "/usr/src/linux-headers-6.5.0-25-generic/"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

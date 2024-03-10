@@ -21,7 +21,7 @@ static int escribir_a_proc(struct seq_file *file_proc, void *v)
     used = inf.freeram * inf.mem_unit + inf.bufferram * inf.mem_unit + inf.sharedram * inf.mem_unit;
     porc = (used * 100) / total;
     notused = total - used;
-    seq_printf(file_proc, "{\"totalRam\":%lu, \"memoriaEnUso\":%lu, \"porcentaje\":%lu, \"libre\":%lu }", total, used, porc, notused);
+    seq_printf(file_proc, "%ld", porc);
     return 0;
 }
 
@@ -37,14 +37,14 @@ static struct proc_ops archivo_operaciones = {
 
 static int __init modulo_init(void)
 {
-    proc_create("modulo_ram", 0, NULL, &archivo_operaciones);
+    proc_create("ram_porcentaje_uso", 0, NULL, &archivo_operaciones);
     printk(KERN_INFO "Modulo RAM montado\n");
     return 0;
 }
 
 static void __exit modulo_cleanup(void)
 {
-    remove_proc_entry("modulo_ram", NULL);
+    remove_proc_entry("ram_porcentaje_uso", NULL);
     printk(KERN_INFO "Modulo RAM eliminado \n");
 }
 
