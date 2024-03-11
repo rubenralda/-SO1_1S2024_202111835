@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.asm": "masm",
+        "sysinfo.h": "c",
+        "module.h": "c"
+    }
+}
