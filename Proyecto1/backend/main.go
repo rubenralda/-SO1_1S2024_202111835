@@ -105,88 +105,81 @@ func InsertarDatos() {
 }
 
 type responseRegistros struct {
-	Mensaje   string
-	Registros []interface{}
+	Mensaje string
+	Labels  []string
+	Data    []float64
 }
 
-type ram struct {
-	Id           int     `json:"id"`
-	Porcentaje   float64 `json:"porcentaje"`
-	Fecha_tiempo string  `json:"time"`
-}
-
-type cpu struct {
-	Id           int     `json:"id"`
-	Porcentaje   float64 `json:"porcentaje"`
-	Fecha_tiempo string  `json:"time"`
-}
-
-func TodoRam() ([]interface{}, error) {
-	var todoRam []interface{}
+func TodoRam() ([]float64, []string, error) {
+	var data []float64
+	var labels []string
 	db, err := sql.Open("mysql", "root:1234@tcp(127.0.0.1:3306)/sopes_proyecto1")
 	if err != nil {
-		return todoRam, err
+		return data, labels, err
 	}
 	defer db.Close()
 
-	registros, err := db.Query("SELECT * FROM ram")
+	registros, err := db.Query("SELECT porcentaje, fecha_tiempo FROM ram")
 	if err != nil {
-		return todoRam, err
+		return data, labels, err
 	}
 	for registros.Next() {
-		var ram ram
-		err = registros.Scan(&ram.Id, &ram.Porcentaje, &ram.Fecha_tiempo)
+		var porcentaje float64
+		var fecha_tiempo string
+		err = registros.Scan(&porcentaje, &fecha_tiempo)
 		if err != nil {
-			return todoRam, err
+			return data, labels, err
 		}
-		todoRam = append(todoRam, ram)
-		//fmt.Println(ram.Fecha_tiempo)
+		data = append(data, porcentaje)
+		labels = append(labels, fecha_tiempo)
 	}
-	return todoRam, nil
+	return data, labels, nil
 }
 
-func TodoCPU() ([]interface{}, error) {
-	var todoRam []interface{}
+func TodoCPU() ([]float64, []string, error) {
+	var data []float64
+	var labels []string
 	db, err := sql.Open("mysql", "root:1234@tcp(127.0.0.1:3306)/sopes_proyecto1")
 	if err != nil {
-		return todoRam, err
+		return data, labels, err
 	}
 	defer db.Close()
 
-	registros, err := db.Query("SELECT * FROM cpu")
+	registros, err := db.Query("SELECT porcentaje, fecha_tiempo FROM cpu")
 	if err != nil {
-		return todoRam, err
+		return data, labels, err
 	}
 	for registros.Next() {
-		var ram cpu
-		err = registros.Scan(&ram.Id, &ram.Porcentaje, &ram.Fecha_tiempo)
+		var porcentaje float64
+		var fecha_tiempo string
+		err = registros.Scan(&porcentaje, &fecha_tiempo)
 		if err != nil {
-			return todoRam, err
+			return data, labels, err
 		}
-		todoRam = append(todoRam, ram)
-		//fmt.Println(ram.Fecha_tiempo)
+		data = append(data, porcentaje)
+		labels = append(labels, fecha_tiempo)
 	}
-	return todoRam, nil
+	return data, labels, nil
 }
 
 func GetTodoRam(c *fiber.Ctx) error {
-	rams, err := TodoRam()
+	data, labels, err := TodoRam()
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(responseRegistros{Mensaje: err.Error()})
 	}
-	return c.Status(fiber.StatusOK).JSON(responseRegistros{Registros: rams})
+	return c.Status(fiber.StatusOK).JSON(responseRegistros{Labels: labels, Data: data})
 }
 
 func GetTodoCPU(c *fiber.Ctx) error {
-	rams, err := TodoCPU()
+	data, labels, err := TodoCPU()
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(responseRegistros{Mensaje: err.Error()})
 	}
-	return c.Status(fiber.StatusOK).JSON(responseRegistros{Registros: rams})
+	return c.Status(fiber.StatusOK).JSON(responseRegistros{Labels: labels, Data: data})
 }
 
 func main() {
-	ticker := time.NewTicker(3 * time.Second)
+	/* ticker := time.NewTicker(3 * time.Second)
 	quit := make(chan struct{})
 	go func() {
 		for {
@@ -198,7 +191,7 @@ func main() {
 				return
 			}
 		}
-	}()
+	}() */
 	app := fiber.New()
 	app.Use(cors.New())
 	// Middleware para imprimir las peticiones
