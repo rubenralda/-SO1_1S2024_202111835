@@ -16,6 +16,7 @@ import (
 type responsePorcentaje struct {
 	Porcentaje float64
 	Mensaje    string
+	Procesos   string
 }
 
 type mierror struct {
@@ -50,6 +51,15 @@ func copiarPorcentajeCPU() (float64, error) {
 		return 0, mierror{mensaje: "Porcentaje incorrecto"}
 	}
 	return porcentaje, nil
+}
+
+func GetProcesos(c *fiber.Ctx) error {
+	cmd := exec.Command("sh", "-c", "cat /proc/procesos_cpu")
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(responsePorcentaje{Mensaje: "Proceso no corriendo"})
+	}
+	return c.Status(fiber.StatusOK).JSON(responsePorcentaje{Procesos: string(out[:])})
 }
 
 func PorcentajeActualRam(c *fiber.Ctx) error {
@@ -210,5 +220,6 @@ func main() {
 	app.Get("/cpu/actual", PorcentajeActualCPU)
 	app.Get("/ram", GetTodoRam)
 	app.Get("/cpu", GetTodoCPU)
+	app.Get("/procesos", GetProcesos)
 	app.Listen(":5000")
 }

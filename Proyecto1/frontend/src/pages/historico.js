@@ -3,6 +3,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import NavBar from "../components/navBar";
 import RamHistorico from "../components/RamHistorico";
+import CPUHistorico from "../components/cpuHistorico";
 
 function Historico() {
   return (
@@ -18,7 +19,7 @@ function Historico() {
           <RamHistorico />
         </Col>
         <Col sm={6} md={6} lg={6} xl={6}>
-          {/* <Cpu /> */}
+          <CPUHistorico />
         </Col>
       </Row>
     </Container>
