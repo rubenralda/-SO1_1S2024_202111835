@@ -1,34 +1,60 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Network } from "vis-network";
 
-function VisNetwork() {
-    const container = useRef(null);
+function Procesos() {
+  const container = useRef(null);
 
-    const nodes = [
-      { id: 1, label: 'Node 1' },
-      { id: 2, label: 'Node 2' },
-      { id: 3, label: 'Node 3' },
-      { id: 4, label: 'Node 4' },
-      { id: 5, label: 'Node 5' }
-    ];
-  
-    const edges = [
-      { from: 1, to: 3 },
-      { from: 1, to: 2 },
-      { from: 2, to: 4 },
-      { from: 2, to: 5 },
-      { from: 3, to: 3 }
-    ];
-  
-    const options = {};
-  
-    useEffect(() => {
-      const network =
-        container.current &&
-        new Network(container.current, { nodes, edges }, options);
-    }, [container, nodes, edges]);
-  
-    return <div ref={container} style={{ height: '500px', width: '800px' }} />;
+  const [nodes, setNodes] = useState([]);
+  const [edges, setEdges] = useState([]);
+
+  const options = {
+    layout: {
+        hierarchical: {
+            direction: "UD",
+            sortMethod: "directed"
+        }
+    }
+  };
+
+  useEffect(() => {
+    fetch("/api/procesos")
+      .then((res) => res.json())
+      .then((data) => {
+        const nodes1 = [];
+        const edges1 = [];
+        const arrayProcesos = JSON.parse(data.Procesos).processes;
+        arrayProcesos.forEach((proceso) => {
+          nodes1.push({ id: proceso.pid, label: `${proceso.name} \nPID: ${proceso.pid.toString()}` });
+          
+          edges1.push({ from: 1, to: proceso.pid });
+          // Si hay hijos, agregar aristas
+          proceso.child.forEach((child) => {
+            if (proceso.pid != 3816) {
+                return
+            }
+            edges1.push({ from: proceso.pid, to: child.pid });
+          });
+        });
+        console.log(edges1);
+        setNodes(nodes1);
+        setEdges(edges1);
+      });
+  }, []);
+
+  useEffect(() => {
+    const network =
+      container.current &&
+      new Network(container.current, { nodes, edges }, options);
+    console.log("generando arbol");
+  }, [container, nodes, edges]);
+  //console.log(nodes)
+  /* const network =
+      container.current &&
+      new Network(container.current, { nodes, edges }, options); */
+
+  return (
+    <div ref={container} style={{ height: "500px", width: "800px" }}></div>
+  );
 }
 
-export default VisNetwork;
+export default Procesos;

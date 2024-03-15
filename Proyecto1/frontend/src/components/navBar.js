@@ -13,7 +13,7 @@ function home() {
           <Nav className="me-auto">
             <Nav.Link href="/tiempo-real">Tiempo Real</Nav.Link>
             <Nav.Link href="/historico">Historico</Nav.Link>
-            <Nav.Link href="/procesos">Historico</Nav.Link>
+            <Nav.Link href="/procesos">Procesos</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>
