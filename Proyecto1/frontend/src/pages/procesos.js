@@ -11,9 +11,9 @@ function Procesos() {
         <NavBar />
       </Row>
       <Row className="justify-content-md-center">
-        <Col sm={12} md={2} lg={2} xl={2}>
-          <label>PRUEBA</label>
-        </Col>
+      <Col sm={12} md={2} lg={2} xl={2}>
+        <label>HOlaadfas</label>
+      </Col>
         <Col sm={12} md={10} lg={10} xl={10}>
           <ComponetProcesos />
         </Col>
