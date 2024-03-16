@@ -8,7 +8,7 @@ import { useState } from "react";
 
 function Procesos() {
   const [Options, setOptions] = useState([]);
-  const [value, setValor] = useState(0);
+  const [value, setValor] = useState("");
 
   const handleSelectChange = (event) => {
     setValor(event.target.value);

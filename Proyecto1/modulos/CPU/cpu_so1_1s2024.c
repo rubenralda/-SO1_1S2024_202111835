@@ -5,6 +5,7 @@
 #include <linux/seq_file.h>
 #include <linux/fs.h>
 #include <linux/sched.h>
+#include <linux/kernel_stat.h>
 #include <linux/mm.h> // get_mm_rss()
 #include <linux/sched/loadavg.h>
 
@@ -61,8 +62,8 @@ static int escribir_a_proc(struct seq_file *file_proc, void *v)
         }
         seq_printf(file_proc, "\"pid\":%d,\n", task->pid);
         seq_printf(file_proc, "\"name\":\"%s\",\n", task->comm);
-        seq_printf(file_proc, "\"user\": %d,\n", task->cred->uid);
-        seq_printf(file_proc, "\"state\":%ld,\n", task->__state);
+        seq_printf(file_proc, "\"user\": %d,\n", task->cred->uid.val);
+        seq_printf(file_proc, "\"state\":%d,\n", task->__state);
         
         struct task_struct *task_padre;
         task_padre = task->real_parent;
@@ -74,11 +75,11 @@ static int escribir_a_proc(struct seq_file *file_proc, void *v)
             }
             else 
             {
-                seq_printf(file_proc, "\"parent\":%ld,\n", task_padre->pid);
+                seq_printf(file_proc, "\"parent\":%d,\n", task_padre->pid);
                 task_padre = NULL;
             }
         }   
-        seq_printf(file_proc, "\"t\":%ld,\n", task->tgid);
+        seq_printf(file_proc, "\"t\":%d,\n", task->tgid);
         int porcentaje = (rss * 100) / total_ram_pages;
         seq_printf(file_proc, "\"ram\":%d,\n", porcentaje);
 
@@ -92,7 +93,7 @@ static int escribir_a_proc(struct seq_file *file_proc, void *v)
                 seq_printf(file_proc, ",{");
                 seq_printf(file_proc, "\"pid\":%d,\n", task_child->pid);
                 seq_printf(file_proc, "\"name\":\"%s\",\n", task_child->comm);
-                seq_printf(file_proc, "\"state\":%ld,\n", task_child->__state);
+                seq_printf(file_proc, "\"state\":%d,\n", task_child->__state);
                 seq_printf(file_proc, "\"pidPadre\":%d\n", task->pid);
                 seq_printf(file_proc, "}\n");
             }
@@ -101,7 +102,7 @@ static int escribir_a_proc(struct seq_file *file_proc, void *v)
                 seq_printf(file_proc, "{");
                 seq_printf(file_proc, "\"pid\":%d,\n", task_child->pid);
                 seq_printf(file_proc, "\"name\":\"%s\",\n", task_child->comm);
-                seq_printf(file_proc, "\"state\":%ld,\n", task_child->__state);
+                seq_printf(file_proc, "\"state\":%d,\n", task_child->__state);
                 seq_printf(file_proc, "\"pidPadre\":%d\n", task->pid);
                 seq_printf(file_proc, "}\n");
                 a = 1;
