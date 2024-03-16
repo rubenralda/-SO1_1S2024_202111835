@@ -63,6 +63,22 @@ static int escribir_a_proc(struct seq_file *file_proc, void *v)
         seq_printf(file_proc, "\"name\":\"%s\",\n", task->comm);
         seq_printf(file_proc, "\"user\": %d,\n", task->cred->uid);
         seq_printf(file_proc, "\"state\":%ld,\n", task->__state);
+        
+        struct task_struct *task_padre;
+        task_padre = task->real_parent;
+        while (task_padre != NULL)
+        {
+            if (task_padre->__state == 8193) //en dos procesos
+            {
+                task_padre = task_padre->real_parent;
+            }
+            else 
+            {
+                seq_printf(file_proc, "\"parent\":%ld,\n", task_padre->pid);
+                task_padre = NULL;
+            }
+        }   
+        seq_printf(file_proc, "\"t\":%ld,\n", task->tgid);
         int porcentaje = (rss * 100) / total_ram_pages;
         seq_printf(file_proc, "\"ram\":%d,\n", porcentaje);
 
@@ -114,6 +130,24 @@ static int escribir_a_proc(struct seq_file *file_proc, void *v)
     }
     b = 0;
     seq_printf(file_proc, "],\n");
+    /* struct pid *pid_struct;
+    pid_t pid_to_find = 996;  // PID del proceso que deseas encontrar
+
+    pid_struct = find_get_pid(pid_to_find);
+    if (pid_struct != NULL) {
+        task = pid_task(pid_struct, PIDTYPE_PID);
+        if (task != NULL) {
+            // Proceso encontrado, puedes acceder a su información a través de task
+            seq_printf(file_proc, "\"pid\":%d,\n", task->pid);
+            seq_printf(file_proc, "\"name\":\"%s\",\n", task->comm);
+            seq_printf(file_proc, "\"state\":%ld,\n", task->__state);
+            seq_printf(file_proc, "\"pidPadre\":%d,\n", task->parent->pid);
+        } else {
+            // Proceso no encontrado
+        }
+    } else {
+        // Proceso no encontrado
+    } */
     seq_printf(file_proc, "\"running\":%d,\n", running);
     seq_printf(file_proc, "\"sleeping\":%d,\n", sleeping);
     seq_printf(file_proc, "\"zombie\":%d,\n", zombie);
