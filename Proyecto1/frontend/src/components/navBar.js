@@ -14,6 +14,7 @@ function home() {
             <Nav.Link href="/tiempo-real">Tiempo Real</Nav.Link>
             <Nav.Link href="/historico">Historico</Nav.Link>
             <Nav.Link href="/procesos">Procesos</Nav.Link>
+            <Nav.Link href="/simulacion">Simulacion</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

@@ -193,6 +193,7 @@ type responseSimulacion struct {
 	Mensaje  string
 	Estado   string
 	Procesos []interface{}
+	Pid      int
 }
 
 func InsertarProceso(pid int) error {
@@ -258,7 +259,7 @@ func SelectProcesos() ([]interface{}, error) {
 	}
 	defer db.Close()
 
-	registros, err := db.Query("SELECT id, estado, pid FROM procesos")
+	registros, err := db.Query("SELECT id, estado, pid FROM procesos where estado != 'kill'")
 	if err != nil {
 		return procesos, err
 	}
@@ -275,7 +276,6 @@ func SelectProcesos() ([]interface{}, error) {
 		}
 		procesos = append(procesos, estado)
 	}
-	fmt.Println(procesos...)
 	return procesos, nil
 }
 
@@ -315,7 +315,7 @@ func StartProcess(c *fiber.Ctx) error {
 	if InsertarProceso(childPID) != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(responseSimulacion{Mensaje: "Error al insertar a la BD"})
 	}
-	return c.Status(fiber.StatusOK).JSON(responseSimulacion{Ok: true, Mensaje: fmt.Sprintf("Proceso iniciado con PID del hijo: %d", childPID)})
+	return c.Status(fiber.StatusOK).JSON(responseSimulacion{Ok: true, Mensaje: fmt.Sprintf("Proceso iniciado con PID del hijo: %d", childPID), Pid: childPID})
 }
 
 func StopProcess(c *fiber.Ctx) error {
