@@ -27,7 +27,7 @@ function Procesos() {
               {Options.map((proceso) => {
                 return (
                   <option value={proceso.pid} key={proceso.pid}>
-                    {proceso.name}
+                    {proceso.pid.toString() + " - " + proceso.name}
                   </option>
                 );
               })}
