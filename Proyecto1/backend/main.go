@@ -79,7 +79,7 @@ func PorcentajeActualCPU(c *fiber.Ctx) error {
 }
 
 func InsertarDatos() {
-	db, err := sql.Open("mysql", "root:1234@tcp(127.0.0.1:3306)/sopes_proyecto1")
+	db, err := sql.Open("mysql", "root:1234@tcp(db:3306)/sopes_proyecto1")
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -123,7 +123,7 @@ type responseRegistros struct {
 func TodoRam() ([]float64, []string, error) {
 	var data []float64
 	var labels []string
-	db, err := sql.Open("mysql", "root:1234@tcp(127.0.0.1:3306)/sopes_proyecto1")
+	db, err := sql.Open("mysql", "root:1234@tcp(db:3306)/sopes_proyecto1")
 	if err != nil {
 		return data, labels, err
 	}
@@ -149,7 +149,7 @@ func TodoRam() ([]float64, []string, error) {
 func TodoCPU() ([]float64, []string, error) {
 	var data []float64
 	var labels []string
-	db, err := sql.Open("mysql", "root:1234@tcp(127.0.0.1:3306)/sopes_proyecto1")
+	db, err := sql.Open("mysql", "root:1234@tcp(db:3306)/sopes_proyecto1")
 	if err != nil {
 		return data, labels, err
 	}
@@ -197,7 +197,7 @@ type responseSimulacion struct {
 }
 
 func InsertarProceso(pid int) error {
-	db, err := sql.Open("mysql", "root:1234@tcp(127.0.0.1:3306)/sopes_proyecto1")
+	db, err := sql.Open("mysql", "root:1234@tcp(db:3306)/sopes_proyecto1")
 	if err != nil {
 		return err
 	}
@@ -214,7 +214,7 @@ func InsertarProceso(pid int) error {
 }
 
 func UpdateProceso(pid int, estado string) error {
-	db, err := sql.Open("mysql", "root:1234@tcp(127.0.0.1:3306)/sopes_proyecto1")
+	db, err := sql.Open("mysql", "root:1234@tcp(db:3306)/sopes_proyecto1")
 	if err != nil {
 		return err
 	}
@@ -230,7 +230,7 @@ func UpdateProceso(pid int, estado string) error {
 }
 
 func SelectProceso(pid int) (string, error) {
-	db, err := sql.Open("mysql", "root:1234@tcp(127.0.0.1:3306)/sopes_proyecto1")
+	db, err := sql.Open("mysql", "root:1234@tcp(db:3306)/sopes_proyecto1")
 	if err != nil {
 		return "", err
 	}
@@ -253,7 +253,7 @@ func SelectProceso(pid int) (string, error) {
 
 func SelectProcesos() ([]interface{}, error) {
 	var procesos []interface{}
-	db, err := sql.Open("mysql", "root:1234@tcp(127.0.0.1:3306)/sopes_proyecto1")
+	db, err := sql.Open("mysql", "root:1234@tcp(db:3306)/sopes_proyecto1")
 	if err != nil {
 		return procesos, err
 	}
@@ -393,7 +393,7 @@ func KillProcess(c *fiber.Ctx) error {
 }
 
 func main() {
-	/* ticker := time.NewTicker(3 * time.Second)
+	ticker := time.NewTicker(5 * time.Second)
 	quit := make(chan struct{})
 	go func() {
 		for {
@@ -405,7 +405,7 @@ func main() {
 				return
 			}
 		}
-	}() */
+	}()
 	app := fiber.New()
 	app.Use(cors.New())
 	// Middleware para imprimir las peticiones

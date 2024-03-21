@@ -1,4 +1,6 @@
 import Button from "react-bootstrap/Button";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import SimulacionGrafica from "./componetGrafica";
 import { useState, useEffect } from "react";
 
@@ -23,9 +25,9 @@ function Botones({ setPid, pidSelect }) {
     fetch("/api/start")
       .then((res) => res.json())
       .then((data) => {
-        console.log(data.Mensaje)
+        console.log(data.Mensaje);
         setPid(data.Pid);
-        setEstado("new")
+        setEstado("new");
       })
       .catch((error) => {
         console.log(error);
@@ -35,8 +37,8 @@ function Botones({ setPid, pidSelect }) {
     fetch("/api/stop/" + pidSelect.toString())
       .then((res) => res.json())
       .then((data) => {
-        console.log(data.Mensaje)
-        setEstado("stop")
+        console.log(data.Mensaje);
+        setEstado("stop");
       })
       .catch((error) => {
         console.log(error);
@@ -67,18 +69,28 @@ function Botones({ setPid, pidSelect }) {
   }
   return (
     <>
-      <Button variant="success" onClick={nuevo}>
-        New
-      </Button>
-      <Button variant="warning" onClick={stop}>
-        Stop
-      </Button>
-      <Button variant="secondary" onClick={ready}>
-        Ready
-      </Button>
-      <Button variant="danger" onClick={kill}>
-        Kill
-      </Button>
+      <Row className="justify-content-md-center">
+        <Col sm={12} md={4} lg={4} xl={4}>
+          <Button variant="success" onClick={nuevo}>
+            New
+          </Button>
+        </Col>
+        <Col sm={12} md={4} lg={4} xl={4}>
+          <Button variant="warning" onClick={stop}>
+            Stop
+          </Button>
+        </Col>
+        <Col sm={12} md={4} lg={4} xl={4}>
+          <Button variant="secondary" onClick={ready}>
+            Ready
+          </Button>
+        </Col>
+        <Col sm={12} md={4} lg={4} xl={4}>
+          <Button variant="danger" onClick={kill}>
+            Kill
+          </Button>
+        </Col>
+      </Row>
       <SimulacionGrafica estado={estado} />
     </>
   );

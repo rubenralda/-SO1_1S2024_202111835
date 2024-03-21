@@ -2,6 +2,19 @@ version: '3.1'
 
 services:
 
+  backend:
+    image: "rubenralda/backend-pr1:v1"
+    user: root
+    ports:
+      - 5000:5000
+    volumes:
+      - /proc:/proc
+
+  frontend:
+    image: "rubenralda/frontend-pr1:v1"
+    ports:
+      - 80:80
+
   db:
     image: mysql
     # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
