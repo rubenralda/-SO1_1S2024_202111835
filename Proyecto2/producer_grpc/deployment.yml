@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-producer
+spec:
+  selector:
+    matchLabels:
+      name: deploy-producer
+  template:
+    metadata:
+      labels:
+        name: deploy-producer
+    spec:
+      containers:
+      - name: producer-cliente
+        image: rubenralda/client-grcp:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 7070
+      - name: producer-server
+        image: rubenralda/server-grcp:latest
+        imagePullPolicy: Always
+      imagePullSecrets:
+        - name: dockerhubpull
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service
+spec:
+  type: LoadBalancer
+  selector:
+    name: deploy-producer
+  ports:
+  - port: 7070
+    targetPort: 7070
