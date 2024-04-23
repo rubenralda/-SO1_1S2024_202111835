@@ -53,7 +53,7 @@ func enviarMensaje(voto Data) {
 		return
 	}
 	p, err := kafka.NewProducer(&kafka.ConfigMap{
-		"bootstrap.servers": "localhost:9092",
+		"bootstrap.servers": "my-cluster-kafka-bootstrap:9092",
 		"client.id":         "grcp_producer",
 		"acks":              "all",
 	})
