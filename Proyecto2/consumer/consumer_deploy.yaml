@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: kafka
+  name: deploy-consumer
+spec:
+  selector:
+    matchLabels:
+      name: deploy-consumer
+  template:
+    metadata:
+      labels:
+        name: deploy-consumer
+    spec:
+      containers:
+      - name: consumer
+        image: rubenralda/consumer5:2.0
+        imagePullPolicy: Always
+      imagePullSecrets:
+        - name: dockerhubpull
