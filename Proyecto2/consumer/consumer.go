@@ -2,28 +2,23 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
+	"github.com/redis/go-redis/v9"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type Data struct {
-	Name  string `bson:"name,omitempty"`
-	Album string `bson:"album,omitempty"`
-	Year  string `bson:"year,omitempty"`
-	Rank  string `bson:"rank,omitempty"`
-}
 type Logs struct {
 	Name  string
 	Fecha time.Time
 }
 
 func main() {
-	fmt.Println("Version 5.1")
+	fmt.Println("Version 6.7")
 	// Conexion mongo
 	uri := "mongodb://admin:1234@34.66.138.214:27017/?authSource=admin"
 
@@ -36,37 +31,61 @@ func main() {
 			panic(err)
 		}
 	}()
-	fmt.Println("Conexion MONGO realizada")
 	coll := client.Database("proyecto2").Collection("logs")
-	newLogs := Logs{Name: "Prueba1", Fecha: time.Now().Local()}
-	result, err := coll.InsertOne(context.TODO(), newLogs)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("Ingresado", result)
+	fmt.Println("Conexion MONGO realizada")
+
+	//Conexion Redis
+	client_redis := redis.NewClient(&redis.Options{
+		Addr:     "34.71.48.91:6379",
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
+
+	ctx := context.Background()
+	fmt.Println("Conexion REDIS realizada")
+
+	// conexion kafka
 	consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers": "my-cluster-kafka-bootstrap:9092",
 		"group.id":          "grcp_producer",
 		"auto.offset.reset": "earliest"})
-
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println("Conexion KAFKA realizada")
 
 	err = consumer.SubscribeTopics([]string{"myTopic"}, nil)
 	run := true
 	for run {
 		msg, err := consumer.ReadMessage(time.Second)
 		if err == nil {
-			voto := Data{}
-
 			fmt.Printf("Message on %s: %s\n", msg.TopicPartition, string(msg.Value))
-			err := json.Unmarshal((*msg).Value, &voto)
+
+			userSession := client_redis.HGetAll(ctx, "votos").Val()
+			valor, ok := userSession[string(msg.Value)]
+			if !ok {
+				valor = "0"
+			}
+
+			conteo, err := strconv.Atoi(valor)
 			if err != nil {
-				fmt.Println("Error al convertir:", err)
+				fmt.Println("Error al convertir")
 				continue
 			}
-			fmt.Println("Convertido", voto)
+
+			err = client_redis.HSet(ctx, "votos", string(msg.Value), conteo+1).Err()
+			if err != nil {
+				fmt.Println("Error set redis:", err)
+				continue
+			}
+			//Registrar logs de mensaje ingresado
+			newLogs := Logs{Name: "Voto: " + string(msg.Value) + " Conteo: " + valor, Fecha: time.Now().Local()}
+			result, err := coll.InsertOne(context.TODO(), newLogs)
+			if err != nil {
+				fmt.Println("Log no registrado: ", err)
+				continue
+			}
+			fmt.Println("Ingresado:", result)
 		} else if !err.(kafka.Error).IsTimeout() {
 			// The client will automatically try to recover from all errors.
 			// Timeout is not considered an error because it is raised by
