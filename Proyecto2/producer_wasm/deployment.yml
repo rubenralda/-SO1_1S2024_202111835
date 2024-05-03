@@ -13,11 +13,11 @@ spec:
     spec:
       containers:
       - name: rust-cliente
-        image: rubenralda/rust_cliente:latest
+        image: rubenralda/rust_cliente:2.0
         ports:
         - containerPort: 8000
       - name: rust-server
-        image: rubenralda/rust_server:latest
+        image: rubenralda/rust_server:3.0
         ports:
         - containerPort: 8080
 ---

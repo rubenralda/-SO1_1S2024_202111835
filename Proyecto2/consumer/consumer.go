@@ -47,8 +47,8 @@ func main() {
 	// conexion kafka
 	consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers": "my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092",
-		"group.id":          "grcp_producer",
-		"auto.offset.reset": "earliest"})
+		"auto.offset.reset": "earliest",
+	})
 	if err != nil {
 		panic(err)
 	}
