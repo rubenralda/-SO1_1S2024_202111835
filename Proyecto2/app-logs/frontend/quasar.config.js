@@ -84,7 +84,7 @@ module.exports = configure(function (/* ctx */) {
       // https: true
       proxy: {
         '/api': {
-          target: 'http://jsonplaceholder.typicode.com',
+          target: 'http://backend:3000',
           changeOrigin: true,
           //rewrite: (path) => path.replace(/^\/api/, '')
         },

@@ -1,0 +1,11 @@
+version: '3.1'
+
+services:
+  backend:
+    image: rubenralda/backend-sopes-pj2:1.0
+    ports:
+      - 3000:3000
+  frontend:
+    image: rubenralda/fronted-sopes1-py2:2.0
+    ports:
+      - 80:80
