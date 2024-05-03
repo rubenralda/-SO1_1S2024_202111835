@@ -54,6 +54,7 @@ func enviarMensaje(voto Data) {
 	}
 	p, err := kafka.NewProducer(&kafka.ConfigMap{
 		"bootstrap.servers": "my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092",
+		"client.id":         "grpc",
 	})
 
 	if err != nil {

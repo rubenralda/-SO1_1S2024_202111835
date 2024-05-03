@@ -18,7 +18,7 @@ spec:
         ports:
         - containerPort: 7070
       - name: producer-server
-        image: rubenralda/server-grcp:2.0
+        image: rubenralda/server-grcp:6.0
         imagePullPolicy: Always
       imagePullSecrets:
         - name: dockerhubpull

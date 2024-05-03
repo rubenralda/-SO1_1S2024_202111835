@@ -3,7 +3,7 @@ const router = Router();
 const { MongoClient } = require("mongodb");
 
 // Replace the uri string with your connection string.
-const uri = "mongodb://admin:1234@34.66.138.214:27017/?authSource=admin";
+const uri = "mongodb://admin:1234@34.71.222.211:27017/?authSource=admin";
 
 function run() {
   return new Promise((resolve, reject) => {
