@@ -1,7 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: kafka
   name: deploy-producer
 spec:
   selector:
@@ -27,10 +26,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: kafka
   name: service-producer-grcp
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     name: deploy-producer
   ports:

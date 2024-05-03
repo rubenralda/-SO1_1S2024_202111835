@@ -17,7 +17,7 @@ struct Data {
 async fn send_data(data: Json<Data>) -> String {
     let client = Client::new();
     //let server_url = "http://app_server:8080/data";
-    let server_url = "http://localhost:8080/data";
+    let server_url = "http://service-rust:8080/data";
     let response = client.post(server_url).json(&data.into_inner()).send().await;
 
     match response {

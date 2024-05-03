@@ -20,7 +20,7 @@ type Logs struct {
 func main() {
 	fmt.Println("Version 6.7")
 	// Conexion mongo
-	uri := "mongodb://admin:1234@34.66.138.214:27017/?authSource=admin"
+	uri := "mongodb://admin:1234@mongo-service.bds.svc.cluster.local:27017/?authSource=admin"
 
 	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(uri))
 	if err != nil {
@@ -36,7 +36,7 @@ func main() {
 
 	//Conexion Redis
 	client_redis := redis.NewClient(&redis.Options{
-		Addr:     "34.71.48.91:6379",
+		Addr:     "redis-service.bds.svc.cluster.local:6379",
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
@@ -46,7 +46,7 @@ func main() {
 
 	// conexion kafka
 	consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
-		"bootstrap.servers": "my-cluster-kafka-bootstrap:9092",
+		"bootstrap.servers": "my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092",
 		"group.id":          "grcp_producer",
 		"auto.offset.reset": "earliest"})
 	if err != nil {

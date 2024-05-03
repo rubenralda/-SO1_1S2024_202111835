@@ -74,7 +74,7 @@ func main() {
 			"res": "todo bien",
 		})
 	})
-	app.Post("/insert", insertData)
+	app.Post("/grpc/send_data", insertData)
 
 	err := app.Listen(":7070")
 	if err != nil {

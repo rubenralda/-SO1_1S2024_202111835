@@ -11,5 +11,5 @@ rocket_cors = "0.6.0"
 serde = { version = "1.0", features = ["derive"] }
 tokio = { version = "1", features = ["full"] }
 reqwest = { version = "0.12.3", features = ["json"] }
-rdkafka = "0.36.2"
 openssl = { version = "0.10", features = ["vendored"] }
+rdkafka = { version = "0.25", features = ["cmake-build"] }

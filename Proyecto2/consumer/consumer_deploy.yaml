@@ -1,7 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: kafka
   name: deploy-consumer
 spec:
   replicas: 2
@@ -15,7 +14,7 @@ spec:
     spec:
       containers:
       - name: consumer
-        image: rubenralda/consumer5:4.7
+        image: rubenralda/go-consumer:latest
         imagePullPolicy: Always
       imagePullSecrets:
         - name: dockerhubpull
@@ -23,7 +22,6 @@ spec:
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  namespace: kafka
   name: mi-aplicacion-autoscaler
 spec:
   scaleTargetRef:

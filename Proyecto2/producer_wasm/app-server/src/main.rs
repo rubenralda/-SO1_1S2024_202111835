@@ -18,7 +18,7 @@ struct Data {
 
 async fn produce(data: &Data) -> Result<(), Box<dyn std::error::Error>> {
     // Configurar la dirección del broker y el nombre del tema Kafka
-    let broker_address = "my-cluster-kafka-bootstrap:9092";
+    let broker_address = "my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092";
     let kafka_topic = "myTopic";
     
     // Configurar el cliente Kafka
@@ -28,7 +28,7 @@ async fn produce(data: &Data) -> Result<(), Box<dyn std::error::Error>> {
     
     // Crear el mensaje a enviar
     let message_value = format!(
-        r#"{{"name":"{}","album":"{}","year":"{}","rank":"{}"}}"#,
+        r#"{{"Name":"{}","Album":"{}","Year":"{}","Rank":"{}"}}"#,
         data.name, data.album, data.year, data.rank
     );
 
@@ -46,7 +46,7 @@ async fn produce(data: &Data) -> Result<(), Box<dyn std::error::Error>> {
 }
 
 #[rocket::post("/data", data = "<data>")]
-fn receive_data(data: Json<Data>) -> Result<String, BadRequest<String>> {
+async fn receive_data(data: Json<Data>) -> Result<String, BadRequest<String>> {
     let received_data = data.into_inner();
     //let json_str = to_string(&received_data).map_err(|e| BadRequest(Some(e.to_string())))?;
     /* let response = JsonValue::from(json!({
@@ -61,7 +61,7 @@ fn receive_data(data: Json<Data>) -> Result<String, BadRequest<String>> {
         },
         Err(e) => {
             eprintln!("Error while producing message to Kafka: {}", e);
-            Err(Status::InternalServerError)
+            Err(BadRequest(e.to_string()))
         }
     }
 }

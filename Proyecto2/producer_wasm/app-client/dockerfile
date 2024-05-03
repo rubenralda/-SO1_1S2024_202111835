@@ -4,10 +4,10 @@ COPY . .
 RUN cargo build --release
 FROM ubuntu:latest
 RUN apt-get update && apt-get install -y libssl-dev
-COPY --from=builder /usr/src/app/target/release/app-cliente /usr/local/bin/app-cliente
+COPY --from=builder /usr/src/app/target/release/app-client /usr/local/bin/app-client
 EXPOSE 8000
-CMD ["app-cliente"]
+CMD ["app-client"]
 
-# docker build -t rubenralda/rust_cliente:1.0 .
-# docker push rubenralda/rust_cliente:1.0
-# docker run -p 8000:8000 rubenralda/rust_cliente:1.0
+# docker build -t rubenralda/rust_cliente:2.0 .
+# docker push rubenralda/rust_cliente:2.0
+# docker run -p 8000:8000 rubenralda/rust_cliente:2.0
